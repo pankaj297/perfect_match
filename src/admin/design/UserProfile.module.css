@@ -1,0 +1,1206 @@
+/* ===== BASE STYLES ===== */
+.profileContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.profileContent {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ===== PRINT HEADER STYLES ===== */
+.printHeader {
+  display: none;
+}
+
+.printHeaderContent {
+  text-align: center;
+  padding: 20px 0;
+  border-bottom: 3px double #2d3748;
+  margin-bottom: 30px;
+}
+
+.printMainTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+  font-family: 'Noto Sans Devanagari', 'Mukta', 'Arial', sans-serif;
+}
+
+.printSubtitle {
+  font-size: 1.1rem;
+  color: #4a5568;
+  margin-bottom: 15px;
+  font-weight: 600;
+  font-family: 'Noto Sans Devanagari', 'Mukta', 'Arial', sans-serif;
+}
+
+.printDistrict {
+  color: #2d3748;
+}
+
+.printSeparator {
+  color: #a0aec0;
+  margin: 0 8px;
+}
+
+.printOrganizer {
+  color: #2d3748;
+}
+
+.printBlessing {
+  margin-top: 15px;
+}
+
+.blessingText {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2d3748;
+  font-family: 'Noto Sans Devanagari', 'Mukta', 'Arial', sans-serif;
+  padding: 8px 20px;
+  border: 2px solid #2d3748;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+/* ===== CONTROLS ===== */
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 15px 25px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.templateSelector {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.selectorLabel {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.templateButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.templateButton {
+  padding: 8px 16px;
+  border: 2px solid #e2e8f0;
+  background: white;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+}
+
+.templateButton:hover {
+  border-color: #667eea;
+  transform: translateY(-1px);
+}
+
+.templateButtonActive {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 12px;
+}
+
+.controlButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.updateButton {
+  background: #48bb78;
+  color: white;
+}
+
+.updateButton:hover {
+  background: #38a169;
+  transform: translateY(-1px);
+}
+
+.printControlButton {
+  background: #2d3748;
+  color: white;
+}
+
+.printControlButton:hover {
+  background: #1a202c;
+  transform: translateY(-1px);
+}
+
+/* ===== BACK BUTTON ===== */
+.backContainer {
+  margin-bottom: 20px;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.backButton:hover {
+  background: white;
+  transform: translateX(-2px);
+}
+
+/* ===== CARD STYLE TEMPLATE ===== */
+.cardRoot {
+  background: #f8fafc;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  min-height: 100vh;
+}
+
+.profileHeaderCard {
+  background: white;
+  border-radius: 20px;
+  margin: 20px;
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.avatarWrapper {
+  position: relative;
+}
+
+.profileAvatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 20px;
+  object-fit: cover;
+  border: 4px solid #e2e8f0;
+}
+
+.onlineIndicator {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 20px;
+  height: 20px;
+  background: #48bb78;
+  border: 3px solid white;
+  border-radius: 50%;
+}
+
+.verificationBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #e6fffa;
+  color: #234e52;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.verifiedIcon {
+  color: #38a169;
+  font-weight: bold;
+}
+
+.profileInfo {
+  flex: 1;
+}
+
+.nameSection {
+  margin-bottom: 15px;
+}
+
+.profileName {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 10px 0;
+}
+
+.profileTags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.genderBadge, .professionBadge, .communityBadge {
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.genderBadge {
+  background: #ebf8ff;
+  color: #2c5282;
+}
+
+.professionBadge {
+  background: #f0fff4;
+  color: #276749;
+}
+
+.communityBadge {
+  background: #faf5ff;
+  color: #6b46c1;
+}
+
+.contactInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.contactIcon {
+  font-size: 1rem;
+}
+
+.actionSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  min-width: 140px;
+}
+
+.primaryAction {
+  background: #667eea;
+  color: white;
+}
+
+.primaryAction:hover {
+  background: #5a6fd8;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.secondaryAction {
+  background: white;
+  color: #2d3748;
+  border: 2px solid #e2e8f0;
+}
+
+.secondaryAction:hover {
+  border-color: #667eea;
+  transform: translateY(-2px);
+}
+
+.btnIcon {
+  font-size: 1rem;
+}
+
+/* Main Grid */
+.mainGrid {
+  padding: 20px;
+}
+
+.section {
+  margin-bottom: 30px;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.sectionGrid {
+  display: grid;
+  gap: 20px;
+}
+
+.grid2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Info Cards */
+.infoCard {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #f1f5f9;
+}
+
+.infoCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.cardIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.cardContent {
+  flex: 1;
+}
+
+.cardLabel {
+  font-size: 0.85rem;
+  color: #718096;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.cardValue {
+  font-size: 1rem;
+  color: #2d3748;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Documents Section */
+.documentsSection {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.documentsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.documentCard {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.documentCard:hover {
+  background: white;
+  border-color: #667eea;
+  transform: translateY(-1px);
+}
+
+.docIcon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.docInfo {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.docLabel {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.viewBtn {
+  background: #667eea;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.viewBtn:hover {
+  background: #5a6fd8;
+  transform: translateY(-1px);
+}
+
+.notAvailable {
+  color: #a0aec0;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+/* ===== GLASS MORPHISM TEMPLATE ===== */
+.glassRoot {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.glassContainer {
+  display: flex;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.glassSidebar {
+  flex: 0 0 320px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.glassAvatarSection {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.glassAvatarWrapper {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.glassAvatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 20px;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  z-index: 2;
+}
+
+.glassAvatarGlow {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+  border-radius: 25px;
+  filter: blur(10px);
+  opacity: 0.6;
+  z-index: 1;
+}
+
+.glassName {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 5px 0;
+}
+
+.glassSubtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 5px 0;
+}
+
+.glassProfession {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+.glassStats {
+  display: flex;
+  justify-content: space-around;
+  margin: 25px 0;
+  padding: 20px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statNumber {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 5px;
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.glassActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.glassBtn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.glassPrimary {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  backdrop-filter: blur(10px);
+}
+
+.glassPrimary:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.glassSecondary {
+  background: transparent;
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.glassSecondary:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+.glassMain {
+  flex: 1;
+}
+
+.glassContent {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.glassSection {
+  margin-bottom: 30px;
+}
+
+.glassSectionTitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sectionIcon {
+  font-size: 1.2rem;
+}
+
+.glassGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.glassCard {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.glassCard .cardLabel {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.glassCard .cardValue {
+  color: white;
+}
+
+.glassDocuments {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 15px;
+}
+
+.glassDocuments .documentCard {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.glassDocuments .docLabel {
+  color: white;
+}
+
+.glassDocuments .viewBtn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.glassDocuments .viewBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ===== MINIMAL TEMPLATE ===== */
+.minimalRoot {
+  background: white;
+  min-height: 100vh;
+}
+
+.minimalContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.minimalHeader {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  padding: 40px 0 30px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.minimalAvatar {
+  flex-shrink: 0;
+}
+
+.minimalAvatarImg {
+  width: 100px;
+  height: 100px;
+  border-radius: 15px;
+  object-fit: cover;
+  border: 2px solid #e2e8f0;
+}
+
+.minimalHeaderInfo {
+  flex: 1;
+}
+
+.minimalName {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 8px 0;
+}
+
+.minimalMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #718096;
+  font-size: 1rem;
+}
+
+.minimalGender {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.metaDivider {
+  color: #cbd5e0;
+}
+
+.minimalProfession {
+  color: #4a5568;
+}
+
+.minimalActions {
+  display: flex;
+  gap: 10px;
+}
+
+.minimalBtn {
+  padding: 10px 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.minimalPrimary {
+  background: #2d3748;
+  color: white;
+  border-color: #2d3748;
+}
+
+.minimalPrimary:hover {
+  background: #1a202c;
+  transform: translateY(-1px);
+}
+
+.minimalSecondary {
+  color: #4a5568;
+}
+
+.minimalSecondary:hover {
+  border-color: #cbd5e0;
+  transform: translateY(-1px);
+}
+
+.minimalMain {
+  padding: 40px 0;
+}
+
+.minimalGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.minimalColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.minimalColumnTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.minimalList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.minimalItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px solid #f7fafc;
+}
+
+.minimalLabel {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.minimalValue {
+  color: #2d3748;
+  text-align: right;
+  max-width: 60%;
+  line-height: 1.4;
+}
+
+.minimalDocuments {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.minimalDocItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f7fafc;
+}
+
+.minimalDocLabel {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.minimalDocLink {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 4px 12px;
+  border: 1px solid #667eea;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.minimalDocLink:hover {
+  background: #667eea;
+  color: white;
+}
+
+.minimalDocMissing {
+  color: #a0aec0;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+/* ===== LOADING & ERROR STATES ===== */
+.loadingWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  color: white;
+}
+
+.loadingSpinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-left: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.loadingText {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.notFound {
+  text-align: center;
+  color: white;
+  font-size: 1.5rem;
+  margin-top: 100px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  .noPrint {
+    display: none !important;
+  }
+
+  .printHeader {
+    display: block !important;
+    position: relative;
+    background: white !important;
+    color: #2d3748 !important;
+    border-bottom: 3px double #2d3748;
+    margin-bottom: 30px;
+    padding: 20px 0;
+  }
+
+  .printMainTitle {
+    font-size: 24px !important;
+    color: #2d3748 !important;
+    margin-bottom: 8px !important;
+  }
+
+  .printSubtitle {
+    font-size: 14px !important;
+    color: #4a5568 !important;
+    margin-bottom: 12px !important;
+  }
+
+  .blessingText {
+    font-size: 16px !important;
+    color: #2d3748 !important;
+    border: 2px solid #2d3748 !important;
+    background: white !important;
+  }
+
+  .profileContainer {
+    background: none !important;
+    padding: 0 !important;
+  }
+
+  .profileContent {
+    margin: 0 !important;
+    max-width: none !important;
+  }
+
+  /* Card template print styles */
+  .cardRoot {
+    background: white !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .profileHeaderCard {
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+    margin: 0 0 30px 0 !important;
+  }
+
+  .onlineIndicator {
+    display: none !important;
+  }
+
+  .actionBtn {
+    display: none !important;
+  }
+
+  .infoCard {
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+
+  .infoCard:hover {
+    transform: none !important;
+  }
+
+  /* Glass template print styles */
+  .glassRoot {
+    background: white !important;
+  }
+
+  .glassContainer {
+    background: white !important;
+  }
+
+  .glassSidebar, .glassContent {
+    background: white !important;
+    backdrop-filter: none !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #2d3748 !important;
+  }
+
+  .glassName, .glassSubtitle, .glassProfession {
+    color: #2d3748 !important;
+  }
+
+  .glassCard {
+    background: white !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+
+  .glassCard .cardLabel {
+    color: #718096 !important;
+  }
+
+  .glassCard .cardValue {
+    color: #2d3748 !important;
+  }
+
+  /* Minimal template print styles */
+  .minimalRoot {
+    background: white !important;
+  }
+
+  .minimalBtn {
+    display: none !important;
+  }
+
+  /* General print optimizations */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  @page {
+    margin: 0.5in;
+    size: letter;
+  }
+
+  .sectionCard, .infoCard, .documentCard {
+    page-break-inside: avoid;
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1024px) {
+  .glassContainer {
+    flex-direction: column;
+  }
+
+  .glassSidebar {
+    flex: none;
+  }
+
+  .minimalGrid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .sectionGrid.grid3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .profileContainer {
+    padding: 10px;
+  }
+
+  .controls {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .templateSelector {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .templateButtons {
+    justify-content: center;
+  }
+
+  .actionButtons {
+    justify-content: center;
+  }
+
+  .profileHeaderCard {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .profileTags {
+    justify-content: center;
+  }
+
+  .contactInfo {
+    align-items: center;
+  }
+
+  .actionSection {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .sectionGrid.grid2,
+  .sectionGrid.grid3 {
+    grid-template-columns: 1fr;
+  }
+
+  .documentsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .minimalHeader {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .minimalActions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .profileHeaderCard {
+    margin: 10px;
+    padding: 20px;
+  }
+
+  .profileName {
+    font-size: 1.8rem;
+  }
+
+  .actionBtn {
+    min-width: 120px;
+    padding: 10px 16px;
+  }
+
+  .glassSidebar, .glassContent {
+    padding: 20px;
+  }
+
+  .glassGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .minimalContainer {
+    padding: 0 15px;
+  }
+
+  .printMainTitle {
+    font-size: 1.5rem !important;
+  }
+
+  .printSubtitle {
+    font-size: 0.9rem !important;
+  }
+}
+
+/* Add in your existing UserProfile.module.css */
+
+.deleteButton {
+  background: #f87171;
+  color: white;
+  border: 1px solid #f87171;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}

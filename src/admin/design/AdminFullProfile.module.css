@@ -1,0 +1,284 @@
+.adminContainer {
+  padding: 24px;
+  min-height: 100vh;
+  background: #f8f9fb;
+  font-family: Arial, sans-serif;
+}
+
+.adminTopTitle {
+  text-align: center;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 12px;
+}
+
+.adminHeader {
+  display: grid;
+  grid-template-columns: 180px 1fr 240px;
+  gap: 20px;
+  align-items: center;
+  padding: 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  margin-bottom: 18px;
+}
+
+.adminPhotoSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.adminUserPhoto {
+  width: 170px;
+  height: 170px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid #e5e7eb;
+}
+
+.adminGanpatiSection {
+  text-align: center;
+}
+
+.adminGanpatiImg {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+.adminGanpatiText {
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+.adminInfoSection {
+  padding: 0 12px;
+}
+
+.adminUserName {
+  font-size: 1.8rem;
+  margin: 0 0 6px;
+  color: #111827;
+}
+
+.adminUserGender {
+  margin: 0;
+  color: #6b7280;
+}
+
+.adminHeaderButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.adminPrintBtn,
+.adminBackBtn,
+.adminEditBtn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.adminPrintBtn {
+  background: #1e3a8a;
+  color: #fff;
+  border-color: #1e3a8a;
+}
+
+.adminBackBtn {
+  background: #f3f4f6;
+}
+
+.adminEditBtn {
+  background: #059669;
+  color: #fff;
+  border-color: #059669;
+}
+
+.adminContent {
+  padding: 0 12px;
+}
+
+.adminSection {
+  background: #fff;
+  padding: 14px 18px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 16px;
+}
+
+.adminSection h2 {
+  font-size: 1.2rem;
+  margin: 0 0 8px;
+}
+
+.adminInfoRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dashed #eee;
+}
+
+.adminInfoLabel {
+  font-weight: 600;
+  color: #374151;
+}
+
+.adminInfoValue {
+  color: #374151;
+}
+
+.adminSection:last-child {
+  margin-bottom: 0;
+}
+
+/* Documents */
+.adminDocumentRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.adminDocLabel {
+  font-weight: 700;
+  color: #374151;
+}
+
+.adminDocLink {
+  color: #1d4ed8;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.adminDocMissing {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.adminActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.loading,
+.notFound {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.1rem;
+}
+
+/* Print Header - Hidden by default */
+.adminPrintHeader {
+  display: none;
+}
+
+/* Print styles */
+@media print {
+  .adminHeaderButtons,
+  .adminActions,
+  .adminDocumentSection {
+    display: none !important;
+  }
+
+  .adminContainer {
+    background: #fff;
+    padding: 0;
+  }
+
+  .adminHeader {
+    display: none;
+  }
+
+  .adminPrintHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 20px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 15px;
+  }
+
+  .adminPrintHeader img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 1px solid #000;
+    border-radius: 8px;
+  }
+
+  .adminPrintPhoto img {
+    border-radius: 8px;
+  }
+
+  .adminPrintGanpati {
+    text-align: center;
+  }
+
+  .adminPrintGanpati img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+  }
+
+  .adminPrintGanpati p {
+    margin-top: 5px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .adminSection {
+    border: 1px solid #000;
+    box-shadow: none;
+    page-break-inside: avoid;
+    margin-bottom: 15px;
+  }
+
+  .adminTopTitle {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #000;
+  }
+
+  .adminInfoRow {
+    border-bottom: 1px solid #ddd;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .adminHeader {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .adminGanpatiSection {
+    order: -1;
+  }
+
+  .adminHeaderButtons {
+    justify-content: center;
+  }
+
+  .adminActions {
+    flex-direction: column;
+  }
+
+  @media print {
+    .adminPrintHeader {
+      flex-direction: row;
+      gap: 15px;
+      text-align: center;
+    }
+  }
+}

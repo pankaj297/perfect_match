@@ -1,0 +1,12 @@
+.admin-login-container {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #6a0dad, #fff); padding: 20px;
+}
+.login-form {
+  background: #fff; padding: 30px; border-radius: 12px; width: 100%; max-width: 420px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 6px solid #6a0dad;
+}
+.login-to-back-home { margin-bottom: 12px; background: #6a0dad; color: #fff; border: 0; padding: 8px 14px; border-radius: 6px; cursor: pointer; }
+.input-field { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ccc; }
+.login-button { width: 100%; padding: 12px; background: #6a0dad; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+.error-msg { margin-top: 10px; color: #e53935; font-weight: 600; }
