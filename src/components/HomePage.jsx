@@ -66,6 +66,10 @@ const HomePage = () => {
               <span>🚀</span>
               सुरुवात करा
             </button>
+            <button className={styles.heroBtn} onClick={() => navigate("/me")}>
+              <span>🚀</span>
+              View Profile
+            </button>
           </div>
         </div>
 

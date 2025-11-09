@@ -674,7 +674,7 @@ const UserProfile = () => {
       <div className={cn(styles.backContainer, "noPrint")}>
         <button
           className={styles.backButton}
-          onClick={() => navigate("/cbaddda")}
+          onClick={() => navigate("/me")}
         >
           ← Back To Home
         </button>

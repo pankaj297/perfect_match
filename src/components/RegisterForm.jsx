@@ -32,14 +32,7 @@ const normalizeForApi = (formData) => {
   const bloodGroup = String(formData.bloodGroup).trim().toUpperCase();
   const mobile = String(formData.mobile).replace(/\D/g, ""); // only digits
 
-  return {
-    ...formData,
-    gender,
-    dob,
-    height,
-    bloodGroup,
-    mobile,
-  };
+  return { ...formData, gender, dob, height, bloodGroup, mobile };
 };
 
 // extract a human-readable message from axios error
@@ -68,7 +61,7 @@ const formatBytes = (bytes) => {
   return `${v} ${sizes[i]}`;
 };
 
-const RegisterForm = () => {
+const RegisterForm = ({ initialMobile = "", lockMobile = false }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -90,10 +83,17 @@ const RegisterForm = () => {
     mama: "",
     kaka: "",
     address: "",
-    mobile: "",
+    mobile: initialMobile || "",
     profilePhoto: null,
     aadhaar: null,
   });
+
+  useEffect(() => {
+    // When OTPRegister provides a verified mobile, keep it in sync
+    if (initialMobile) {
+      setFormData((p) => ({ ...p, mobile: initialMobile }));
+    }
+  }, [initialMobile]);
 
   const [photoPreview, setPhotoPreview] = useState(null);
   const [aadhaarPreviewName, setAadhaarPreviewName] = useState("");
@@ -205,10 +205,12 @@ const RegisterForm = () => {
         if (!BLOOD_REGEX.test(value)) return "उदा. A+, B-, O+, AB+";
         return "";
 
-      case "mobile":
+      case "mobile": {
         if (isEmpty(value)) return "मोबाईल नंबर आवश्यक आहे";
-        if (!/^\d{10,}$/.test(value)) return "किमान 10 अंकांचा वैध नंबर टाका";
+        const only = String(value).replace(/\D/g, "");
+        if (!/^\d{10}$/.test(only)) return "वैध 10 अंकी नंबर टाका";
         return "";
+      }
 
       case "profilePhoto":
         if (!value) return "प्रोफाइल फोटो आवश्यक आहे";
@@ -264,6 +266,8 @@ const RegisterForm = () => {
 
       if (touched[name]) setError(name, validateField(name, file));
     } else {
+      // If mobile is locked, don't let user edit it
+      if (lockMobile && name === "mobile") return;
       setField(name, value);
       if (touched[name]) setError(name, validateField(name, value));
     }
@@ -349,6 +353,29 @@ const RegisterForm = () => {
         return;
       }
 
+      // Save to "this device only" list for SelfProfile (/me)
+      try {
+        const keyIds = "deviceProfileIds";
+        const keyActive = "activeProfileId";
+        const raw = localStorage.getItem(keyIds);
+        let ids = [];
+        try {
+          ids = raw ? JSON.parse(raw) : [];
+        } catch {
+          ids = [];
+        }
+        const sId = String(userId);
+        if (!ids.includes(sId)) ids.push(sId);
+        localStorage.setItem(keyIds, JSON.stringify(ids));
+        localStorage.setItem(keyActive, sId);
+        // Back-compatible
+        localStorage.setItem("currentUserId", sId);
+        if (data.user)
+          localStorage.setItem("currentUser", JSON.stringify(data.user));
+      } catch (e) {
+        console.warn("Failed to persist device profile ids:", e);
+      }
+
       // Success popup
       setResultPopup({
         open: true,
@@ -357,7 +384,7 @@ const RegisterForm = () => {
         message: "तुमची माहिती सेव्ह झाली. प्रोफाइल पेजवर नेत आहोत...",
       });
 
-      setTimeout(() => navigate(`/`), 3000);
+      setTimeout(() => navigate(`/me`), 1200);
     } catch (err) {
       console.error("Register error:", err);
       setResultPopup({
@@ -545,7 +572,7 @@ const RegisterForm = () => {
 
             <div className={styles["rf-row"]}>
               <div className={styles["rf-field"]}>
-                <label>লिंग *</label>
+                <label>लिंग *</label>
                 <select
                   className={cn(
                     "rf-input",
@@ -628,7 +655,7 @@ const RegisterForm = () => {
                   type="text"
                   id="kuldevat"
                   name="kuldevat"
-                  placeholder="কुलদেবত टाका"
+                  placeholder="कुलदेवत टाका"
                   value={formData.kuldevat}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -930,6 +957,8 @@ const RegisterForm = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 required
+                disabled={lockMobile}
+                title={lockMobile ? "OTP पडताळलेला मोबाईल" : ""}
               />
               {touched.mobile && errors.mobile && (
                 <span className={styles["rf-error"]}>{errors.mobile}</span>
@@ -1059,7 +1088,7 @@ const RegisterForm = () => {
                 mama: "",
                 kaka: "",
                 address: "",
-                mobile: "",
+                mobile: initialMobile || "",
                 profilePhoto: null,
                 aadhaar: null,
               });

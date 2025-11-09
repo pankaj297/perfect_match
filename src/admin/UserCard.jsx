@@ -123,12 +123,13 @@ const UserCard = ({ user }) => {
         >
           👁️ View Profile
         </button>
-        <button
+        {/* <button
           className={`${styles.profileButton} ${styles.secondaryButton}`}
           onClick={() => navigate(`/cbaddda/profile/${user.id}`)}
         >
           📄 Profile Template
-        </button>
+        </button> */}
+        
       </div>
 
       {/* Verified */}
