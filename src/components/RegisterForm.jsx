@@ -530,6 +530,7 @@ const RegisterForm = () => {
                   errors.name && touched.name && "rf-input--error"
                 )}
                 type="text"
+                id="name"
                 name="name"
                 placeholder="तुमचे पूर्ण नाव टाका"
                 value={formData.name}
@@ -550,6 +551,7 @@ const RegisterForm = () => {
                     "rf-input",
                     errors.gender && touched.gender && "rf-input--error"
                   )}
+                  id="gender"
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}
@@ -576,6 +578,7 @@ const RegisterForm = () => {
                     errors.dob && touched.dob && "rf-input--error"
                   )}
                   type="date"
+                  id="dob"
                   name="dob"
                   value={formData.dob}
                   onChange={handleChange}
@@ -601,6 +604,7 @@ const RegisterForm = () => {
                   errors.birthplace && touched.birthplace && "rf-input--error"
                 )}
                 type="text"
+                id="birthplace"
                 name="birthplace"
                 placeholder="शहर / गाव टाका"
                 value={formData.birthplace}
@@ -622,6 +626,7 @@ const RegisterForm = () => {
                     errors.kuldevat && touched.kuldevat && "rf-input--error"
                   )}
                   type="text"
+                  id="kuldevat"
                   name="kuldevat"
                   placeholder="कुलदेवत टाका"
                   value={formData.kuldevat}
@@ -642,6 +647,7 @@ const RegisterForm = () => {
                     errors.gotra && touched.gotra && "rf-input--error"
                   )}
                   type="text"
+                  id="gotra"
                   name="gotra"
                   placeholder="गोत्र टाका"
                   value={formData.gotra}
@@ -664,6 +670,7 @@ const RegisterForm = () => {
                     errors.height && touched.height && "rf-input--error"
                   )}
                   type="text"
+                  id="height"
                   name="height"
                   placeholder="उदा. 170 से.मी"
                   value={formData.height}
@@ -684,6 +691,7 @@ const RegisterForm = () => {
                     errors.bloodGroup && touched.bloodGroup && "rf-input--error"
                   )}
                   type="text"
+                  id="bloodGroup"
                   name="bloodGroup"
                   placeholder="उदा. A+, B-, O+"
                   value={formData.bloodGroup}
@@ -708,6 +716,7 @@ const RegisterForm = () => {
                     errors.education && touched.education && "rf-input--error"
                   )}
                   type="text"
+                  id="education"
                   name="education"
                   placeholder="शिक्षण टाका"
                   value={formData.education}
@@ -728,6 +737,7 @@ const RegisterForm = () => {
                     errors.profession && touched.profession && "rf-input--error"
                   )}
                   type="text"
+                  id="profession"
                   name="profession"
                   placeholder="तुमचा व्यवसाय टाका"
                   value={formData.profession}
@@ -757,6 +767,7 @@ const RegisterForm = () => {
                     errors.fatherName && touched.fatherName && "rf-input--error"
                   )}
                   type="text"
+                  id="fatherName"
                   name="fatherName"
                   value={formData.fatherName}
                   onChange={handleChange}
@@ -780,6 +791,7 @@ const RegisterForm = () => {
                       "rf-input--error"
                   )}
                   type="text"
+                  id="fatherProfession"
                   name="fatherProfession"
                   value={formData.fatherProfession}
                   onChange={handleChange}
@@ -803,6 +815,7 @@ const RegisterForm = () => {
                     errors.motherName && touched.motherName && "rf-input--error"
                   )}
                   type="text"
+                  id="motherName"
                   name="motherName"
                   value={formData.motherName}
                   onChange={handleChange}
@@ -826,6 +839,7 @@ const RegisterForm = () => {
                       "rf-input--error"
                   )}
                   type="text"
+                  id="motherProfession"
                   name="motherProfession"
                   value={formData.motherProfession}
                   onChange={handleChange}
@@ -846,6 +860,7 @@ const RegisterForm = () => {
                 <input
                   className={styles["rf-input"]}
                   type="text"
+                  id="siblings"
                   name="siblings"
                   placeholder="उदा. 1 बहीण, 1 भाऊ"
                   value={formData.siblings}
@@ -858,6 +873,7 @@ const RegisterForm = () => {
                 <input
                   className={styles["rf-input"]}
                   type="text"
+                  id="mama"
                   name="mama"
                   value={formData.mama}
                   onChange={handleChange}
@@ -869,6 +885,7 @@ const RegisterForm = () => {
                 <input
                   className={styles["rf-input"]}
                   type="text"
+                  id="kaka"
                   name="kaka"
                   value={formData.kaka}
                   onChange={handleChange}
@@ -884,6 +901,7 @@ const RegisterForm = () => {
                   errors.address && touched.address && "rf-input--error"
                 )}
                 type="text"
+                id="address"
                 name="address"
                 placeholder="संपूर्ण पत्ता टाका"
                 value={formData.address}
@@ -904,6 +922,7 @@ const RegisterForm = () => {
                   errors.mobile && touched.mobile && "rf-input--error"
                 )}
                 type="text"
+                id="mobile"
                 name="mobile"
                 inputMode="numeric"
                 placeholder="उदा. 9876543210"
