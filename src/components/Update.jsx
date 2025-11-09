@@ -8,6 +8,7 @@ const API_BASE = (
   import.meta.env.VITE_API_URL ||
   "http://localhost:8080/api"
 ).replace(/\/$/, "");
+
 const USERS_URL = `${API_BASE}/users`;
 
 // helpers

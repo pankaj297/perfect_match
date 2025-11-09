@@ -334,6 +334,7 @@ const RegisterForm = () => {
           }
         },
       });
+      
       const data = res.data || {};
       const userId = data.id || data.user?.id;
 

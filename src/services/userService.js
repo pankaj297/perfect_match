@@ -17,7 +17,7 @@ export async function registerUser(payload) {
 }
 
 export async function getAllUsers() {
-  const res = await axios.get(`${API_BASE}/users/`);
+  const res = await axios.get(`${API_BASE}/users`);
   return res.data;
 }
 
@@ -38,7 +38,7 @@ export async function deleteUser(id) {
 }
 
 export async function adminLogin(username, password) {
-  const res = await axios.post(`${API_BASE}/admin/login`, {
+  const res = await axios.post(`${API_BASE}/users/admin/login`, {
     username,
     password,
   });
