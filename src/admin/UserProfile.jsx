@@ -151,7 +151,7 @@ const TemplateCard = ({ user, onUpdate, onPrint, onDelete }) => (
           onClick={onUpdate}
         >
           <span className={styles.btnIcon}>✏️</span>
-          प्रोफाइल संपादन करा
+          प्रोफाइल अपडेट करा
         </button>
         <button
           className={cn(styles.actionBtn, styles.secondaryAction)}
@@ -371,7 +371,7 @@ const TemplateMinimal = ({ user, onUpdate, onPrint, onDelete }) => (
             className={cn(styles.minimalBtn, styles.minimalPrimary)}
             onClick={onUpdate}
           >
-            प्रोफाइल संपादित करा
+            प्रोफाइल अपडेट करा
           </button>
           <button
             className={cn(styles.minimalBtn, styles.minimalSecondary)}

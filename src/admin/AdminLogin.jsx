@@ -41,8 +41,8 @@ export const AdminLogin = () => {
 
   // Optional local fallback creds (dev only)
   const fallbackAdmin = {
-    username: "123",
-    password: "345",
+    username: "pankaj1807",
+    password: "pankaj1807",
     image: "/images/admin.jpeg",
   };
 

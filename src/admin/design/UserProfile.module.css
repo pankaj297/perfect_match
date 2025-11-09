@@ -1168,8 +1168,8 @@
   }
 
   .actionBtn {
-    min-width: 120px;
-    padding: 10px 16px;
+    min-width: 80px;
+    padding: 8px 10px;
   }
 
   .glassSidebar, .glassContent {
