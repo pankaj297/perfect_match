@@ -5,8 +5,8 @@ import "./design/AdminLogin.css";
 
 const API_ADMIN_LOGIN =
   "https://perfect-match-server.onrender.com/api/admin/login";
-const API_USERS_ADMIN_LOGIN =
-  "https://perfect-match-server.onrender.com/api/users/admin/login";
+// const API_USERS_ADMIN_LOGIN =
+//   "https://perfect-match-server.onrender.com/api/users/admin/login";
 
 // Try primary admin login; if not found (404/405), fallback to legacy users endpoint
 const adminLogin = async (username, password) => {
