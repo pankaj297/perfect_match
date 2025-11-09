@@ -3,10 +3,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./design/RegisterForm.module.css";
 
-
-const BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api"
-).replace(/\/$/, "");
 const MAX_FILE_MB = 10;
 const BLOOD_REGEX = /^(A|B|AB|O)[+-]$/i; // e.g., A+, B-, O+, AB-
 const GENDERS = ["पुरुष", "महिला"];
@@ -19,7 +15,7 @@ const cn = (...classes) =>
     .map((c) => (styles[c] ? styles[c] : c))
     .join(" ");
 
-// normalize values to reduce server-side 400s
+// normalize values to reduce server-side 400
 const normalizeForApi = (formData) => {
   const gender =
     formData.gender === "पुरुष"
@@ -321,20 +317,24 @@ const RegisterForm = () => {
         fd.append("profilePhoto", formData.profilePhoto);
       if (formData.aadhaar) fd.append(AADHAAR_FIELD, formData.aadhaar);
 
-      const res = await axios.post(`${BASE_URL}/users/register`, fd, {
-        headers: { "Content-Type": "multipart/form-data" },
-        onUploadProgress: (pe) => {
-          if (!pe) return;
-          const loaded = pe.loaded || 0;
-          const total = pe.total || 0;
-          setUploadBytes({ loaded, total });
-          if (total > 0) {
-            const percent = Math.round((loaded * 100) / total);
-            setUploadProgress(percent);
-          }
-        },
-      });
-      
+      const res = await axios.post(
+        "https://perfect-match-server.onrender.com/api/users/register",
+        fd,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          onUploadProgress: (pe) => {
+            if (!pe) return;
+            const loaded = pe.loaded || 0;
+            const total = pe.total || 0;
+            setUploadBytes({ loaded, total });
+            if (total > 0) {
+              const percent = Math.round((loaded * 100) / total);
+              setUploadProgress(percent);
+            }
+          },
+        }
+      );
+
       const data = res.data || {};
       const userId = data.id || data.user?.id;
 
@@ -545,7 +545,7 @@ const RegisterForm = () => {
 
             <div className={styles["rf-row"]}>
               <div className={styles["rf-field"]}>
-                <label>लिंग *</label>
+                <label>লिंग *</label>
                 <select
                   className={cn(
                     "rf-input",
@@ -628,7 +628,7 @@ const RegisterForm = () => {
                   type="text"
                   id="kuldevat"
                   name="kuldevat"
-                  placeholder="कुलदेवत टाका"
+                  placeholder="কुलদেবত टाका"
                   value={formData.kuldevat}
                   onChange={handleChange}
                   onBlur={handleBlur}

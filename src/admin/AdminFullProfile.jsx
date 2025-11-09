@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { getUserById } from "../services/userService";
 import styles from "./design/AdminFullProfile.module.css";
+
+const API_USERS_URL = "https://perfect-match-server.onrender.com/api/users";
+
+const getUserById = async (id) => {
+  const res = await axios.get(`${API_USERS_URL}/${id}`);
+  return res.data;
+};
 
 const AdminFullProfile = () => {
   const { id } = useParams();

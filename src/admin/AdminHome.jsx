@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllUsers } from "../services/userService";
+import axios from "axios";
 import UserCard from "./UserCard";
 import styles from "./design/AdminHome.module.css";
+
+const API_USERS_URL = "https://perfect-match-server.onrender.com/api/users/";
+
+// Simple API helper
+const getAllUsers = async () => {
+  const res = await axios.get(API_USERS_URL);
+  return res.data;
+};
 
 const AdminHome = () => {
   const [users, setUsers] = useState([]);
@@ -11,7 +19,7 @@ const AdminHome = () => {
   const [filterGender, setFilterGender] = useState("all");
   const navigate = useNavigate();
 
-  // Simple auth guard
+  // Simple auth guard + fetch users
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("adminLoggedIn") === "true";
     if (!isLoggedIn) {
@@ -121,14 +129,6 @@ const AdminHome = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className={styles.searchInput}
           />
-          {searchTerm && (
-            <button
-              className={styles.clearSearch}
-              onClick={() => setSearchTerm("")}
-            >
-              ✕
-            </button>
-          )}
         </div>
 
         <div className={styles.filterGroup}>

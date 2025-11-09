@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useMemo } from "react";
+import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { getUserById, deleteUser } from "../services/userService";
 import styles from "./design/UserProfile.module.css";
+
+const API_USERS = "https://perfect-match-server.onrender.com/api/users";
 
 const templates = [
   { key: "card", label: "कार्ड शैली" },
@@ -14,6 +16,26 @@ const cn = (...cls) =>
     .filter(Boolean)
     .map((c) => (styles[c] ? styles[c] : c))
     .join(" ");
+
+const formatDate = (dob) => {
+  if (!dob) return "";
+  const s = String(dob);
+  // ISO or YYYY-MM-DD
+  return s.length >= 10 ? s.substring(0, 10) : s;
+};
+
+const uiGenderFromApi = (g) =>
+  g === "MALE" ? "पुरुष" : g === "FEMALE" ? "महिला" : g || "";
+
+/* Small API helpers (direct URLs) */
+const getUserById = async (id) => {
+  const res = await axios.get(`${API_USERS}/${id}`);
+  return res.data;
+};
+
+const deleteUser = async (id) => {
+  await axios.delete(`${API_USERS}/delete/${id}`);
+};
 
 const InfoCard = ({ icon, label, value, className = "" }) => (
   <div className={cn(styles.infoCard, className)}>
@@ -74,7 +96,7 @@ const PrintHeader = () => (
   </div>
 );
 
-/* Card Style Template (मराठीत) */
+/* Card Style Template */
 const TemplateCard = ({ user, onUpdate, onPrint, onDelete }) => (
   <div className={styles.cardRoot}>
     <PrintHeader />
@@ -101,7 +123,9 @@ const TemplateCard = ({ user, onUpdate, onPrint, onDelete }) => (
         <div className={styles.nameSection}>
           <h1 className={styles.profileName}>{user.name}</h1>
           <div className={styles.profileTags}>
-            <span className={styles.genderBadge}>{user.gender}</span>
+            <span className={styles.genderBadge}>
+              {uiGenderFromApi(user.gender)}
+            </span>
             {user.profession && (
               <span className={styles.professionBadge}>{user.profession}</span>
             )}
@@ -151,7 +175,7 @@ const TemplateCard = ({ user, onUpdate, onPrint, onDelete }) => (
     <div className={styles.mainGrid}>
       {/* Personal Information */}
       <Section title="वैयक्तिक माहिती" columns={3}>
-        <InfoCard icon="🎂" label="जन्म तारीख" value={user.dob} />
+        <InfoCard icon="🎂" label="जन्म तारीख" value={formatDate(user.dob)} />
         <InfoCard icon="🏠" label="जन्म ठिकाण" value={user.birthplace} />
         <InfoCard icon="🛐" label="कुळदेवत" value={user.kuldevat} />
         <InfoCard icon="🌳" label="गोत्र" value={user.gotra} />
@@ -177,7 +201,7 @@ const TemplateCard = ({ user, onUpdate, onPrint, onDelete }) => (
         />
         <InfoCard icon="👥" label="भाऊ-बहिणी" value={user.siblings} />
         <InfoCard icon="👨‍👩‍👧" label="मामा" value={user.mama} />
-        <InfoCard icon="👨‍👩‍👦" label="कााका" value={user.kaka} />
+        <InfoCard icon="👨‍👩‍👦" label="काका" value={user.kaka} />
         <InfoCard icon="📍" label="पत्ता" value={user.address} />
         <InfoCard icon="📞" label="मोबाइल" value={user.mobile} />
       </Section>
@@ -191,7 +215,7 @@ const TemplateCard = ({ user, onUpdate, onPrint, onDelete }) => (
   </div>
 );
 
-/* Glass Morphism Template (मराठीत) - फक्त अनुवादित लेबल्स */
+/* Glass Morphism Template */
 const TemplateGlass = ({ user, onUpdate, onPrint, onDelete }) => (
   <div className={styles.glassRoot}>
     <PrintHeader />
@@ -213,7 +237,7 @@ const TemplateGlass = ({ user, onUpdate, onPrint, onDelete }) => (
 
         <div className={styles.glassInfo}>
           <h1 className={styles.glassName}>{user.name}</h1>
-          <p className={styles.glassSubtitle}>{user.gender}</p>
+          <p className={styles.glassSubtitle}>{uiGenderFromApi(user.gender)}</p>
           {user.profession && (
             <p className={styles.glassProfession}>{user.profession}</p>
           )}
@@ -250,7 +274,11 @@ const TemplateGlass = ({ user, onUpdate, onPrint, onDelete }) => (
               <span className={styles.sectionIcon}>👤</span> वैयक्तिक माहिती
             </h3>
             <div className={styles.glassGrid}>
-              <InfoCard icon="🎂" label="जन्म तारीख" value={user.dob} />
+              <InfoCard
+                icon="🎂"
+                label="जन्म तारीख"
+                value={formatDate(user.dob)}
+              />
               <InfoCard icon="🏠" label="जन्म ठिकाण" value={user.birthplace} />
               <InfoCard icon="🛐" label="कुळदेवत" value={user.kuldevat} />
               <InfoCard icon="🌳" label="गोत्र" value={user.gotra} />
@@ -284,7 +312,7 @@ const TemplateGlass = ({ user, onUpdate, onPrint, onDelete }) => (
               />
               <InfoCard label="भाऊ-बहिणी" value={user.siblings} icon="👥" />
               <InfoCard label="मामा" value={user.mama} icon="👨‍👩‍👧" />
-              <InfoCard label="कााका" value={user.kaka} icon="👨‍👩‍👦" />
+              <InfoCard label="काका" value={user.kaka} icon="👨‍👩‍👦" />
             </div>
           </div>
 
@@ -306,7 +334,7 @@ const TemplateGlass = ({ user, onUpdate, onPrint, onDelete }) => (
   </div>
 );
 
-/* Minimal Template (मराठीत) */
+/* Minimal Template */
 const TemplateMinimal = ({ user, onUpdate, onPrint, onDelete }) => (
   <div className={styles.minimalRoot}>
     <PrintHeader />
@@ -325,7 +353,9 @@ const TemplateMinimal = ({ user, onUpdate, onPrint, onDelete }) => (
         <div className={styles.minimalHeaderInfo}>
           <h1 className={styles.minimalName}>{user.name}</h1>
           <div className={styles.minimalMeta}>
-            <span className={styles.minimalGender}>{user.gender}</span>
+            <span className={styles.minimalGender}>
+              {uiGenderFromApi(user.gender)}
+            </span>
             {user.profession && (
               <>
                 <span className={styles.metaDivider}>•</span>
@@ -368,7 +398,9 @@ const TemplateMinimal = ({ user, onUpdate, onPrint, onDelete }) => (
             <div className={styles.minimalList}>
               <div className={styles.minimalItem}>
                 <span className={styles.minimalLabel}>जन्म तारीख</span>
-                <span className={styles.minimalValue}>{user.dob || "-"}</span>
+                <span className={styles.minimalValue}>
+                  {formatDate(user.dob) || "-"}
+                </span>
               </div>
               <div className={styles.minimalItem}>
                 <span className={styles.minimalLabel}>जन्म ठिकाण</span>
@@ -452,7 +484,7 @@ const TemplateMinimal = ({ user, onUpdate, onPrint, onDelete }) => (
                 <span className={styles.minimalValue}>{user.mama || "-"}</span>
               </div>
               <div className={styles.minimalItem}>
-                <span className={styles.minimalLabel}>कााका</span>
+                <span className={styles.minimalLabel}>काका</span>
                 <span className={styles.minimalValue}>{user.kaka || "-"}</span>
               </div>
               <div className={styles.minimalItem}>
@@ -512,9 +544,6 @@ const TemplateMinimal = ({ user, onUpdate, onPrint, onDelete }) => (
   </div>
 );
 
-/* Minimal Template Marathi Helpers */
-const TemplateCardMarathi = TemplateCard; // placeholder if needed
-
 const UserProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -557,8 +586,6 @@ const UserProfile = () => {
 
   const onUpdate = () => user?.id && navigate(`/update/${user.id}`);
 
-  // Delete handler
-  // In UserProfile.jsx, replace your handleDelete with this:
   const handleDelete = async () => {
     if (!user?.id) return;
     const confirmDelete = window.confirm("ही प्रोफाइल हटवू इच्छिता?");
@@ -567,7 +594,7 @@ const UserProfile = () => {
     try {
       await deleteUser(user.id);
 
-      // Clear local storage if this was the current user
+      // If this was the current user in localStorage, clear it
       const storedId = localStorage.getItem("currentUserId");
       if (storedId && String(storedId) === String(user.id)) {
         localStorage.removeItem("currentUserId");
@@ -575,7 +602,7 @@ const UserProfile = () => {
         localStorage.removeItem("user");
       }
 
-      navigate("/");
+      navigate("/"); // or navigate("/cbaddda") if your home is the admin home
     } catch (err) {
       console.error("Failed to delete user:", err);
       alert("प्रोफाइल हटवण्यात त्रुटी आली. कृपया पुन्हा प्रयत्न करा.");
@@ -588,7 +615,6 @@ const UserProfile = () => {
     return TemplateCard;
   }, [template]);
 
-  // Render
   if (loading)
     return (
       <div className={styles.loadingWrap}>
@@ -599,7 +625,6 @@ const UserProfile = () => {
 
   if (!user) return <div className={styles.notFound}>युजर आढळला नाही.</div>;
 
-  // Render chosen template with onDelete prop
   return (
     <div className={styles.profileContainer}>
       {/* Controls */}

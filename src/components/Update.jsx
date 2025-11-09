@@ -3,14 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import styles from "./design/Update.module.css";
 
-const API_BASE = (
-  import.meta.env.VITE_API_BASE_URL ||
-  import.meta.env.VITE_API_URL ||
-  "http://localhost:8080/api"
-).replace(/\/$/, "");
-
-const USERS_URL = `${API_BASE}/users`;
-
 // helpers
 const cn = (...classes) =>
   classes
@@ -268,6 +260,14 @@ const Update = () => {
   // toast
   const [toast, setToast] = useState({ type: "", message: "" });
 
+  // cleanup object URLs
+  useEffect(() => {
+    return () => {
+      if (photoPreview) URL.revokeObjectURL(photoPreview);
+      if (aadhaarPreview) URL.revokeObjectURL(aadhaarPreview);
+    };
+  }, [photoPreview, aadhaarPreview]);
+
   // Age calculation
   const age = React.useMemo(() => {
     if (!formData.dob) return null;
@@ -310,12 +310,14 @@ const Update = () => {
     return Math.round((done / total) * 100);
   }, [formData]);
 
-  // Load user
+  // Load user (direct URL; removed env-based base)
   useEffect(() => {
     const fetchUser = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${USERS_URL}/${id}`);
+        const res = await axios.get(
+          `https://perfect-match-server.onrender.com/api/users/${id}`
+        );
         const user = res.data;
 
         setFormData({
@@ -511,25 +513,30 @@ const Update = () => {
         data.append("profilePhoto", formData.profilePhoto);
       if (formData.aadhaar) data.append("aadhaar", formData.aadhaar);
 
-      await axios.put(`${USERS_URL}/update/${id}`, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-        onUploadProgress: (pe) => {
-          if (!pe) return;
-          const loaded = pe.loaded || 0;
-          const total = pe.total || 0;
-          setUploadBytes({ loaded, total });
-          if (total > 0) {
-            const percent = Math.round((loaded * 100) / total);
-            setUploadProgress(percent);
-          }
-        },
-      });
+      // Direct URL for PUT
+      await axios.put(
+        `https://perfect-match-server.onrender.com/api/users/update/${id}`,
+        data,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          onUploadProgress: (pe) => {
+            if (!pe) return;
+            const loaded = pe.loaded || 0;
+            const total = pe.total || 0;
+            setUploadBytes({ loaded, total });
+            if (total > 0) {
+              const percent = Math.round((loaded * 100) / total);
+              setUploadProgress(percent);
+            }
+          },
+        }
+      );
 
       setResultPopup({
         open: true,
         type: "success",
         title: "अपडेट यशस्वी 🎉",
-        message: "तुमचे प्रोफाइल अपडेट झाले. प्रोफाइल पेजवर नेत आहोत...",
+        message: "তुमचे प्रोफाइल अपडेट झाले. प्रोफाइल पेजवर नेत आहोत...",
       });
 
       setTimeout(() => navigate(`/profile/${id}`), 3000);
@@ -734,7 +741,7 @@ const Update = () => {
                     onBlur={handleBlur}
                     required
                   >
-                    <option value="">लिंग निवडा</option>
+                    <option value="">লিংग निवडा</option>
                     <option value="पुरुष">पुरुष</option>
                     <option value="महिला">महिला</option>
                   </select>
@@ -1052,7 +1059,7 @@ const Update = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.label}>पत्ता *</label>
+                <label className={styles.label}>পत्ता *</label>
                 <input
                   className={cn(
                     styles.input,

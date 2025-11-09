@@ -1,7 +1,36 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { adminLogin } from "../services/userService";
 import "./design/AdminLogin.css";
+
+const API_ADMIN_LOGIN =
+  "https://perfect-match-server.onrender.com/api/admin/login";
+const API_USERS_ADMIN_LOGIN =
+  "https://perfect-match-server.onrender.com/api/users/admin/login";
+
+// Try primary admin login; if not found (404/405), fallback to legacy users endpoint
+const adminLogin = async (username, password) => {
+  try {
+    const res = await axios.post(
+      API_ADMIN_LOGIN,
+      { username, password },
+      { headers: { "Content-Type": "application/json" } }
+    );
+    return res.data;
+  } catch (err) {
+    const status = err?.response?.status;
+    // Fallback only for missing/changed route cases
+    if (status === 404 || status === 405) {
+      const res2 = await axios.post(
+        API_USERS_ADMIN_LOGIN,
+        { username, password },
+        { headers: { "Content-Type": "application/json" } }
+      );
+      return res2.data;
+    }
+    throw err;
+  }
+};
 
 export const AdminLogin = () => {
   const [username, setUsername] = useState("");
@@ -16,14 +45,13 @@ export const AdminLogin = () => {
     password: "345",
     image: "/images/admin.jpeg",
   };
-   
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
-      // Try backend login first (expects admin/admin123 unless configured)
       await adminLogin(username, password);
 
       localStorage.setItem(
