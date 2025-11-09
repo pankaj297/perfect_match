@@ -527,9 +527,6 @@ const RegisterForm = ({ initialMobile = "", lockMobile = false }) => {
 
           <div className={styles["rf-title-wrap"]}>
             <h2 className={styles["rf-title"]}>तुमचे प्रोफाइल तयार करा</h2>
-            <p className={styles["rf-subtitle"]}>
-              एका डिव्हाइसवर फक्त एकच User नोंदणी करू शकतो ✅
-            </p>
           </div>
 
           <div className={styles["rf-progress"]}>

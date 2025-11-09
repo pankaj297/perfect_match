@@ -202,6 +202,21 @@ h1, h2, h3, h4, h5, h6 {
   gap: 0.5rem;
 }
 
+.heroBtn2 {
+  padding: 1rem 2rem;
+  background: purple;
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .heroBtn:hover {
   background: var(--primary-dark);
   transform: translateY(-2px);
