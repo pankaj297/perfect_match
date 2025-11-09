@@ -539,7 +539,7 @@ const Update = () => {
         message: "তुमचे प्रोफाइल अपडेट झाले. प्रोफाइल पेजवर नेत आहोत...",
       });
 
-      setTimeout(() => navigate(`/profile/${id}`), 3000);
+      setTimeout(() => navigate(`/cbaddda`), 3000);
     } catch (err) {
       console.error(err);
       setResultPopup({
