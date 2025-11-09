@@ -17,7 +17,7 @@ export async function registerUser(payload) {
 }
 
 export async function getAllUsers() {
-  const res = await axios.get(`${API_BASE}/users`);
+  const res = await axios.get(`${API_BASE}/users/`);
   return res.data;
 }
 
