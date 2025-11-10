@@ -283,7 +283,7 @@ const SelfProfile = () => {
           ) : activeLoading ? (
             <div className={styles.loader}>
               <div className={styles.spinner} />
-              <div className={styles.spinner-text}>
+              <div className={styles.abc}>
                 सक्रिय प्रोफाइल लोड होत आहे...
               </div>
             </div>
