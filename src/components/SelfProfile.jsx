@@ -283,7 +283,9 @@ const SelfProfile = () => {
           ) : activeLoading ? (
             <div className={styles.loader}>
               <div className={styles.spinner} />
-              <div>सक्रिय प्रोफाइल लोड होत आहे...</div>
+              <div className={styles.spinner-text}>
+                सक्रिय प्रोफाइल लोड होत आहे...
+              </div>
             </div>
           ) : activeError ? (
             <div className={styles.errorCard}>
