@@ -61,7 +61,7 @@ const AdminHome = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("adminLoggedIn");
-    navigate("/admin-login");
+    navigate("/");
   };
 
   if (loading) {
