@@ -528,16 +528,6 @@ const RegisterForm = ({ initialMobile = "", lockMobile = false }) => {
           <div className={styles["rf-title-wrap"]}>
             <h2 className={styles["rf-title"]}>तुमचे प्रोफाइल तयार करा</h2>
           </div>
-
-          <div className={styles["rf-progress"]}>
-            <div
-              className={styles["rf-progress__bar"]}
-              style={{ width: `${progress}%` }}
-            />
-            <span className={styles["rf-progress__label"]}>
-              {progress}% पूर्ण
-            </span>
-          </div>
         </div>
 
         {/* Grid */}
@@ -1062,6 +1052,16 @@ const RegisterForm = ({ initialMobile = "", lockMobile = false }) => {
 
         {/* Actions */}
         <div className={styles["rf-actions"]}>
+          <div
+            className={styles["rf-progress"]}
+            style={{ "--progress": `${progress}%` }}
+          >
+            <div className={styles["rf-progress__bar"]}></div>
+            <span className={styles["rf-progress__label"]}>
+              {progress}% पूर्ण
+            </span>
+          </div>
+
           <button
             type="button"
             className={cn("rf-btn", "rf-btn--ghost")}

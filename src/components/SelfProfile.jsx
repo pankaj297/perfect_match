@@ -1,17 +1,29 @@
-import React, { useEffect, useState } from "react";
+// SelfProfile.optimized.jsx
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./design/SelfProfile.module.css";
 
-const API_USERS = "https://perfect-match-server.onrender.com/api/users";
+const API_BASE = "https://perfect-match-server.onrender.com/api";
+const API_USERS = `${API_BASE}/users`;
 
 // LocalStorage keys
 const LS_KEYS = {
-  ids: "deviceProfileIds", // JSON array of user IDs created on this device
-  active: "activeProfileId", // a single active profile ID
+  ids: "deviceProfileIds",
+  active: "activeProfileId",
+  cachePrefix: "deviceProfileCache_v1_", // per-id cached user JSON
 };
 
-// Helpers to manage localStorage "device-scoped" IDs
+// Cache TTL (ms) - set short for active UX; adjust as needed
+const CACHE_TTL = 1000 * 60 * 5; // 5 minutes
+
+// Axios instance with timeout
+const api = axios.create({
+  baseURL: API_BASE,
+  timeout: 10000, // 10s
+});
+
+// ---------- localStorage helpers ----------
 const getDeviceProfileIds = () => {
   try {
     const raw = localStorage.getItem(LS_KEYS.ids);
@@ -43,7 +55,7 @@ const getActiveProfileId = () => {
   const a = localStorage.getItem(LS_KEYS.active);
   if (a) return a;
   const ids = getDeviceProfileIds();
-  return ids[ids.length - 1] || ""; // default to last created if any
+  return ids[ids.length - 1] || "";
 };
 
 const setActiveProfileId = (id) => {
@@ -54,15 +66,71 @@ const setActiveProfileId = (id) => {
   localStorage.setItem(LS_KEYS.active, String(id));
 };
 
+// ---------- caching helpers ----------
+const cacheKeyFor = (id) => `${LS_KEYS.cachePrefix}${String(id)}`;
+
+const getCachedUser = (id) => {
+  try {
+    const raw = localStorage.getItem(cacheKeyFor(id));
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (!obj || !obj.fetchedAt) return null;
+    const age = Date.now() - obj.fetchedAt;
+    if (age > CACHE_TTL) return obj.user; // still return object but mark stale in loader logic
+    return obj.user;
+  } catch {
+    return null;
+  }
+};
+
+const setCachedUser = (id, user) => {
+  try {
+    const payload = { fetchedAt: Date.now(), user };
+    localStorage.setItem(cacheKeyFor(id), JSON.stringify(payload));
+  } catch {
+    // ignore storage errors
+  }
+};
+
+// Remove cached entry (used on delete)
+const removeCachedUser = (id) => {
+  try {
+    localStorage.removeItem(cacheKeyFor(id));
+  } catch {}
+};
+
+// ---------- small utilities ----------
 const uiGender = (g) =>
   g === "MALE" ? "पुरुष" : g === "FEMALE" ? "महिला" : g || "-";
 const formatDate = (dob) => (dob ? String(dob).substring(0, 10) : "-");
 
+// limit concurrent promises: simple implementation
+const fetchWithConcurrency = async (tasks, concurrency = 4) => {
+  const results = [];
+  let idx = 0;
+  const runners = new Array(concurrency).fill(null).map(async () => {
+    while (idx < tasks.length) {
+      const i = idx++;
+      try {
+        const r = await tasks[i]();
+        results[i] = { status: "fulfilled", value: r };
+      } catch (err) {
+        results[i] = { status: "rejected", reason: err };
+      }
+    }
+  });
+  await Promise.all(runners);
+  return results;
+};
+
+// ---------- component ----------
 const SelfProfile = () => {
   const navigate = useNavigate();
+
   const [tab, setTab] = useState("active"); // "active" | "all"
   const [ids, setIds] = useState(() => getDeviceProfileIds());
   const [activeId, setActiveId] = useState(() => getActiveProfileId());
+
   const [activeUser, setActiveUser] = useState(null);
   const [activeLoading, setActiveLoading] = useState(false);
   const [activeError, setActiveError] = useState("");
@@ -74,85 +142,189 @@ const SelfProfile = () => {
   // deletion state
   const [deletingId, setDeletingId] = useState("");
 
-  // Fetch a single user
-  const fetchUser = async (id) => {
-    const res = await axios.get(`${API_USERS}/${id}`);
+  // keep controllers to abort inflight requests on unmount
+  const inflightControllers = useRef(new Map());
+
+  // Fetch single user (supports signal)
+  const fetchUser = useCallback(async (id, signal) => {
+    // use axios with signal (modern axios supports AbortSignal)
+    const res = await api.get(`/users/${id}`, { signal });
     return res.data;
-  };
+  }, []);
 
-  // Load active profile
-  const loadActive = async (id) => {
-    if (!id) {
-      setActiveUser(null);
+  // Load active profile (uses cached quickly, then refresh if stale/missing)
+  const loadActive = useCallback(
+    async (id) => {
+      // abort any previous active fetch
+      const prev = inflightControllers.current.get("active");
+      if (prev) {
+        try {
+          prev.abort();
+        } catch {}
+      }
+      if (!id) {
+        setActiveUser(null);
+        setActiveError("");
+        setActiveLoading(false);
+        return;
+      }
+
       setActiveError("");
-      return;
-    }
-    setActiveLoading(true);
-    setActiveError("");
-    try {
-      const data = await fetchUser(id);
-      setActiveUser(data);
-    } catch (err) {
-      const msg =
-        err?.response?.data || err?.message || "प्रोफाइल लोड करण्यात अडचण आली.";
-      setActiveUser(null);
-      setActiveError(typeof msg === "string" ? msg : "त्रुटी आली.");
-    } finally {
-      setActiveLoading(false);
-    }
-  };
+      setActiveLoading(true);
 
-  // Load all local profiles
-  const loadAll = async (idsList) => {
-    if (!idsList || idsList.length === 0) {
-      setAllUsers([]);
-      return;
-    }
-    setAllLoading(true);
-    try {
-      const results = await Promise.allSettled(
-        idsList.map((id) => fetchUser(id))
-      );
-      const mapped = results.map((r, idx) => {
-        const id = idsList[idx];
-        if (r.status === "fulfilled") return r.value;
-        return { id, _error: r.reason?.message || "लोड होत नाही" };
+      // quick show cached if exists
+      const cached = getCachedUser(id);
+      if (cached) {
+        setActiveUser(cached);
+        // continue to refresh in background if cache might be stale (we only have fetchedAt TTL logic)
+      } else {
+        setActiveUser(null);
+      }
+
+      // prepare controller for the network fetch
+      const controller = new AbortController();
+      inflightControllers.current.set("active", controller);
+
+      try {
+        const fresh = await fetchUser(id, controller.signal);
+        setActiveUser(fresh);
+        setCachedUser(id, fresh);
+        setActiveError("");
+      } catch (err) {
+        if (axios.isCancel?.(err)) {
+          // aborted, do nothing
+        } else {
+          const msg =
+            err?.response?.data ||
+            err?.message ||
+            "प्रोफाइल लोड करण्यात अडचण आली.";
+          setActiveUser((prev) => prev || null);
+          setActiveError(typeof msg === "string" ? msg : "त्रुटी आली.");
+        }
+      } finally {
+        inflightControllers.current.delete("active");
+        setActiveLoading(false);
+      }
+    },
+    [fetchUser]
+  );
+
+  // Load all: show cached items immediately, fetch missing/stale ones in controlled batches
+  const loadAll = useCallback(
+    async (idsList) => {
+      if (!idsList || idsList.length === 0) {
+        setAllUsers([]);
+        return;
+      }
+
+      // compute initial list from cache (we will fill missing later)
+      const initial = idsList.map((id) => {
+        const cached = getCachedUser(id);
+        if (cached) {
+          return cached;
+        }
+        return { id, _loading: true };
       });
-      setAllUsers(mapped);
-    } finally {
-      setAllLoading(false);
-    }
-  };
+      setAllUsers(initial);
 
-  // Init load
+      setAllLoading(true);
+
+      // Prepare fetch tasks only for ids that lack cache or are null
+      const toFetch = idsList.filter((id) => !getCachedUser(id));
+
+      try {
+        if (toFetch.length === 0) {
+          // nothing to fetch, done
+          return;
+        }
+
+        // Create tasks that return the user object
+        const tasks = toFetch.map((id) => async () => {
+          const controller = new AbortController();
+          inflightControllers.current.set(id, controller);
+          try {
+            const user = await fetchUser(id, controller.signal);
+            setCachedUser(id, user);
+            return user;
+          } finally {
+            inflightControllers.current.delete(id);
+          }
+        });
+
+        // limit concurrency to 4 (safe default)
+        const rawResults = await fetchWithConcurrency(tasks, 4);
+
+        // map results back into full list
+        const refreshed = idsList.map((id) => {
+          // first try cached (maybe set by fetches)
+          const cached = getCachedUser(id);
+          if (cached) return cached;
+
+          // fallback: check results
+          const idx = toFetch.indexOf(id);
+          if (idx >= 0) {
+            const r = rawResults[idx];
+            if (r?.status === "fulfilled") return r.value;
+            return { id, _error: r?.reason?.message || "लोड होत नाही" };
+          }
+          // else: probably had cached earlier but expired — still attempt to read cache again
+          return { id, _error: "लोड होत नाही" };
+        });
+
+        setAllUsers(refreshed);
+      } catch (err) {
+        // general fallback - preserve existing minimal state but show an error entry for affected ids
+        const mapped = idsList.map((id) => {
+          const cached = getCachedUser(id);
+          if (cached) return cached;
+          return { id, _error: "लोड करताना त्रुटी" };
+        });
+        setAllUsers(mapped);
+      } finally {
+        setAllLoading(false);
+      }
+    },
+    [fetchUser]
+  );
+
+  // init: sync from localStorage only — avoid double-loading here
   useEffect(() => {
-    // Ensure we sync from localStorage (in case other parts of app modified it)
     const freshIds = getDeviceProfileIds();
     setIds(freshIds);
     const freshActive = getActiveProfileId();
     setActiveId(freshActive);
-    loadActive(freshActive);
-    // Preload all tab
-    loadAll(freshIds);
+    // do not call loadAll/loadActive here to avoid duplicate calls:
+    // dependent useEffects will run below
+    // cleanup on unmount: abort inflight
+    return () => {
+      inflightControllers.current.forEach((c) => {
+        try {
+          c.abort();
+        } catch {}
+      });
+      inflightControllers.current.clear();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Update active when activeId changes
+  // when activeId changes, load active
   useEffect(() => {
     loadActive(activeId);
-  }, [activeId]);
+  }, [activeId, loadActive]);
 
-  // When ids change, refresh all
+  // when ids change, refresh all
   useEffect(() => {
     loadAll(ids);
-  }, [ids]);
+  }, [ids, loadAll]);
 
+  // Make active
   const handleMakeActive = (id) => {
     setActiveProfileId(id);
     setActiveId(String(id));
     setTab("active");
   };
 
-  // Permanently delete (DB + local)
+  // Delete profile (DB + local)
   const handleDeleteProfile = async (id) => {
     const sId = String(id);
     const confirmDelete = window.confirm(
@@ -160,25 +332,36 @@ const SelfProfile = () => {
     );
     if (!confirmDelete) return;
 
-    try {
-      setDeletingId(sId);
-      await axios.delete(`${API_USERS}/delete/${sId}`);
+    // optimistic UI: mark deleting
+    setDeletingId(sId);
 
-      // Remove from device local storage
+    try {
+      // abort any in-flight fetch for this id
+      const ctrl = inflightControllers.current.get(sId);
+      if (ctrl) {
+        try {
+          ctrl.abort();
+        } catch {}
+      }
+
+      await api.delete(`/users/delete/${sId}`);
+
+      // remove local cache + ids
+      removeCachedUser(sId);
       const nextIds = removeDeviceProfileId(sId);
       setIds(nextIds);
 
-      // If deleting the active one, pick fallback or clear
+      // handle active
       if (String(activeId) === sId) {
         const fallback = nextIds[nextIds.length - 1] || "";
         setActiveProfileId(fallback);
         setActiveId(fallback);
         if (!fallback) setActiveUser(null);
+        else loadActive(fallback);
       }
 
-      // Refresh list
       if (nextIds.length) {
-        await loadAll(nextIds);
+        loadAll(nextIds);
       } else {
         setAllUsers([]);
       }
@@ -196,7 +379,7 @@ const SelfProfile = () => {
   const handleRegister = () => navigate("/register");
   const handleEdit = () =>
     activeUser?.id && navigate(`/update/${activeUser.id}`);
-  const handleOpenProfile = (id) => navigate(`/profile/${id}`); // templates page
+  const handleOpenProfile = (id) => navigate(`/profile/${id}`);
   const handlePrint = () => window.print();
   const handleRefreshActive = () => loadActive(activeId);
 
@@ -283,9 +466,7 @@ const SelfProfile = () => {
           ) : activeLoading ? (
             <div className={styles.loader}>
               <div className={styles.spinner} />
-              <div className={styles.abc}>
-                सक्रिय प्रोफाइल लोड होत आहे...
-              </div>
+              <div className={styles.abc}>सक्रिय प्रोफाइल लोड होत आहे...</div>
             </div>
           ) : activeError ? (
             <div className={styles.errorCard}>
@@ -318,6 +499,7 @@ const SelfProfile = () => {
                     src={activeUser.profilePhotoPath || "/default-avatar.png"}
                     alt={activeUser.name}
                     className={styles.photo}
+                    loading="lazy"
                     onError={(e) =>
                       (e.currentTarget.src = "/default-avatar.png")
                     }
@@ -454,6 +636,7 @@ const SelfProfile = () => {
                           src={u.profilePhotoPath || "/default-avatar.png"}
                           alt={u.name || `User ${id}`}
                           className={styles.cardPhoto}
+                          loading="lazy"
                           onError={(e) =>
                             (e.currentTarget.src = "/default-avatar.png")
                           }
@@ -528,7 +711,7 @@ const SelfProfile = () => {
   );
 };
 
-// Presentational little helpers
+// Presentational little helpers (same)
 const Info = ({ label, value }) => (
   <div className={styles.infoItem}>
     <span className={styles.infoLabel}>{label}</span>

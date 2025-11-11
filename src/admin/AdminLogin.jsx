@@ -1,36 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./design/AdminLogin.css";
 
-const API_ADMIN_LOGIN =
-  "https://perfect-match-server.onrender.com/api/admin/login";
-// const API_USERS_ADMIN_LOGIN =
-//   "https://perfect-match-server.onrender.com/api/users/admin/login";
+const API_BASE = "https://perfect-match-server.onrender.com/api";
+const API_ADMIN_LOGIN = `${API_BASE}/admin/login`;
+const API_USERS_ADMIN_LOGIN = `${API_BASE}/users/admin/login`;
 
-// Try primary admin login; if not found (404/405), fallback to legacy users endpoint
-const adminLogin = async (username, password) => {
-  try {
-    const res = await axios.post(
-      API_ADMIN_LOGIN,
-      { username, password },
-      { headers: { "Content-Type": "application/json" } }
-    );
-    return res.data;
-  } catch (err) {
-    const status = err?.response?.status;
-    // Fallback only for missing/changed route cases
-    if (status === 404 || status === 405) {
-      const res2 = await axios.post(
-        API_USERS_ADMIN_LOGIN,
-        { username, password },
-        { headers: { "Content-Type": "application/json" } }
-      );
-      return res2.data;
-    }
-    throw err;
-  }
-};
+// axios instance with a sensible timeout
+const api = axios.create({
+  baseURL: API_BASE,
+  timeout: 8000, // 8 seconds - adjust if needed
+});
 
 export const AdminLogin = () => {
   const [username, setUsername] = useState("");
@@ -39,44 +20,123 @@ export const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Optional local fallback creds (dev only)
+  // keep AbortController so we can cancel previous requests if user resubmits
+  const currentController = useRef(null);
+
+  // local fallback credentials (dev only) - keep but only used when backend fails
   const fallbackAdmin = {
     username: "nitin5319",
     password: "nitin5319",
     image: "/images/admin.jpeg",
   };
 
+  const tryFallback = () => {
+    localStorage.setItem("adminUser", JSON.stringify(fallbackAdmin));
+    localStorage.setItem("adminLoggedIn", "true");
+    navigate("/cbaddda");
+  };
+
+  const adminLogin = async (username, password, signal) => {
+    // Primary attempt
+    const res = await api.post(
+      "/admin/login",
+      { username, password },
+      { signal }
+    );
+    return res.data;
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+
+    // minimal client validation to avoid unnecessary network calls
+    if (!username.trim() || !password) {
+      setError("कृपया वापरकर्तानाव आणि पासवर्ड भरा.");
+      return;
+    }
+
+    // Cancel any previous in-flight login
+    if (currentController.current) {
+      try {
+        currentController.current.abort();
+      } catch {}
+      currentController.current = null;
+    }
+
+    const controller = new AbortController();
+    currentController.current = controller;
+
     setLoading(true);
 
     try {
-      await adminLogin(username, password);
+      const data = await adminLogin(username, password, controller.signal);
 
+      // success -> store and navigate
       localStorage.setItem(
         "adminUser",
-        JSON.stringify({ username, image: "/images/admin.jpeg" })
+        JSON.stringify({
+          username: username,
+          image: "/images/admin.jpeg",
+          ...data?.meta,
+        })
       );
       localStorage.setItem("adminLoggedIn", "true");
+      currentController.current = null;
       navigate("/cbaddda");
     } catch (err) {
-      // Fallback to local creds (if backend rejects)
+      currentController.current = null;
+
+      // handle cancellation separately (user retried or navigated away)
+      if (err.name === "CanceledError" || err.message === "canceled") {
+        // aborted by user action; do nothing special
+        setError("Request cancelled.");
+        setLoading(false);
+        return;
+      }
+
+      const status = err?.response?.status;
+
+      // Optional: fallback to legacy endpoint only if primary endpoint not found
+      if (status === 404 || status === 405) {
+        try {
+          const res2 = await api.post("/users/admin/login", {
+            username,
+            password,
+          });
+          localStorage.setItem(
+            "adminUser",
+            JSON.stringify({ username, image: "/images/admin.jpeg" })
+          );
+          localStorage.setItem("adminLoggedIn", "true");
+          navigate("/cbaddda");
+          return;
+        } catch (e) {
+          // continue to final fallback / error
+        }
+      }
+
+      // if backend outright refused but the typed credentials equal your dev fallback -> allow
       if (
         username === fallbackAdmin.username &&
         password === fallbackAdmin.password
       ) {
-        localStorage.setItem("adminUser", JSON.stringify(fallbackAdmin));
-        localStorage.setItem("adminLoggedIn", "true");
-        navigate("/cbaddda");
-      } else {
-        const msg =
-          err?.response?.data ||
-          err?.message ||
-          "Invalid username or password.";
+        tryFallback();
+        return;
+      }
+
+      // network/timeouts produce err.code or err.message
+      if (err.code === "ECONNABORTED" || err.message?.includes("timeout")) {
         setError(
-          typeof msg === "string" ? msg : "Invalid username or password."
+          "सर्वर प्रतिक्रिया फारधी आहे — थोड्या वेळानंतर पुन्हा प्रयत्न करा."
         );
+      } else if (status === 401) {
+        setError("अवैध वापरकर्तानाव किंवा पासवर्ड.");
+      } else if (status >= 500) {
+        setError("सर्वरमध्ये समस्या आहे. कृपया नंतर प्रयत्न करा.");
+      } else {
+        const msg = err?.response?.data || err?.message || "Login failed.";
+        setError(typeof msg === "string" ? msg : "Login failed.");
       }
     } finally {
       setLoading(false);
@@ -90,6 +150,7 @@ export const AdminLogin = () => {
           type="button"
           className="login-to-back-home"
           onClick={() => navigate("/")}
+          disabled={loading}
         >
           Back to Home
         </button>
@@ -103,6 +164,8 @@ export const AdminLogin = () => {
             onChange={(e) => setUsername(e.target.value)}
             className="input-field"
             required
+            autoComplete="username"
+            disabled={loading}
           />
           <input
             type="password"
@@ -111,6 +174,8 @@ export const AdminLogin = () => {
             onChange={(e) => setPassword(e.target.value)}
             className="input-field"
             required
+            autoComplete="current-password"
+            disabled={loading}
           />
           <button type="submit" className="login-button" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
@@ -121,3 +186,5 @@ export const AdminLogin = () => {
     </div>
   );
 };
+
+export default AdminLogin;

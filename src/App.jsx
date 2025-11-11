@@ -7,7 +7,7 @@ import RegisterForm from "./components/RegisterForm.jsx";
 import AdminFullProfile from "./admin/AdminFullProfile.jsx";
 import Update from "./components/Update.jsx";
 import SelfProfile from "./components/SelfProfile.jsx";
-
+import ProtectedRoute from "./utils/ProtectedRoute.jsx";
 
 import "./styles/global.css";
 
@@ -15,17 +15,47 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Public routes */}
         <Route path="/" element={<Home />} />
-        <Route path="admin-login" element={<AdminLogin />} />
-        <Route path="/cbaddda" element={<AdminHome />} />
-        {/* Admin full profile */}
-        <Route path="/cbaddda/user/:id" element={<AdminFullProfile />} />
-        {/* Regular user profile */}
+        <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/profile/:id" element={<UserProfile />} />
-        <Route path="/update/:id" element={<Update />} /> {/* 🔹 Added */}
-        <Route path="/me" element={<SelfProfile />} />
-    
+
+        {/* ✅ Protected Admin Routes */}
+        <Route
+          path="/cbaddda"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminHome />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cbaddda/user/:id"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminFullProfile />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ✅ Protected User Routes */}
+        <Route
+          path="/update/:id"
+          element={
+            <ProtectedRoute role="user">
+              <Update />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/me"
+          element={
+            <ProtectedRoute role="user">
+              <SelfProfile />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
