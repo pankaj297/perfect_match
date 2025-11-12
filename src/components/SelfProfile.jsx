@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./design/SelfProfile.module.css";
 
 const API_BASE = "https://perfect-match-server.onrender.com/api";
-const API_USERS = `${API_BASE}/users`;
+
 
 // LocalStorage keys
 const LS_KEYS = {
@@ -20,7 +20,7 @@ const CACHE_TTL = 1000 * 60 * 5; // 5 minutes
 // Axios instance with timeout
 const api = axios.create({
   baseURL: API_BASE,
-  timeout: 10000, // 10s
+  timeout: 50000, // 10s
 });
 
 // ---------- localStorage helpers ----------
@@ -313,9 +313,16 @@ const SelfProfile = () => {
   }, [activeId, loadActive]);
 
   // when ids change, refresh all
-  useEffect(() => {
+  // useEffect(() => {
+  //   loadAll(ids);
+  // }, [ids, loadAll]);
+
+  // after: only load when tab is 'all'
+useEffect(() => {
+  if (tab === "all") {
     loadAll(ids);
-  }, [ids, loadAll]);
+  }
+}, [ids, loadAll, tab]);
 
   // Make active
   const handleMakeActive = (id) => {

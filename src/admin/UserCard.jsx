@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./design/UserCard.module.css";
 
-const UserCard = ({ user }) => {
+// Memoized card to avoid re-renders when unrelated parent state changes
+const UserCard = React.memo(({ user, onView, onPrefetch }) => {
   const navigate = useNavigate();
 
-  const getGenderIcon = (gender) => {
-    return gender === "MALE" ? "👨" : gender === "FEMALE" ? "👩" : "👤";
-  };
+  const handleView = useCallback(() => {
+    if (onView) return onView();
+    navigate(`/cbaddda/user/${user.id}`);
+  }, [navigate, onView, user.id]);
+
+  // small helpers
+  const getGenderIcon = (gender) =>
+    gender === "MALE" ? "👨" : gender === "FEMALE" ? "👩" : "👤";
 
   const getProfessionIcon = (profession) => {
     if (!profession) return "💼";
@@ -24,7 +30,7 @@ const UserCard = ({ user }) => {
 
   const formatMobile = (mobile) => {
     if (!mobile) return "Not provided";
-    const cleaned = mobile.replace(/\D/g, "");
+    const cleaned = String(mobile).replace(/\D/g, "");
     if (cleaned.length === 10) {
       return cleaned.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
     }
@@ -38,8 +44,11 @@ const UserCard = ({ user }) => {
         <div className={styles.photoContainer}>
           <img
             src={user.profilePhotoPath || "/default-avatar.png"}
-            alt={user.name}
+            alt={user.name || "User"}
             className={styles.userPhoto}
+            width={120}
+            height={120}
+            loading="lazy"
             onError={(e) => {
               e.currentTarget.src = "/default-avatar.png";
             }}
@@ -119,28 +128,22 @@ const UserCard = ({ user }) => {
       <div className={styles.cardFooter}>
         <button
           className={`${styles.profileButton} ${styles.primaryButton}`}
-          onClick={() => navigate(`/cbaddda/user/${user.id}`)}
+          onClick={handleView}
+          onMouseEnter={onPrefetch} // prefetch heavy chunk when user is likely to click
+          onFocus={onPrefetch}
         >
           👁️ View Profile
         </button>
-        {/* <button
-          className={`${styles.profileButton} ${styles.secondaryButton}`}
-          onClick={() => navigate(`/cbaddda/profile/${user.id}`)}
-        >
-          📄 Profile Template
-        </button> */}
-        
       </div>
 
       {/* Verified */}
       {user.profilePhotoPath && (
         <div className={styles.verifiedBadge}>
-          <span className={styles.verifiedIcon}>✓</span>
-          Verified
+          <span className={styles.verifiedIcon}>✓</span> Verified
         </div>
       )}
     </div>
   );
-};
+});
 
 export default UserCard;

@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./design/HomePage.module.css";
+import { prefetchSelfProfile } from "../App"; // import the helper
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -66,7 +67,12 @@ const HomePage = () => {
               <span>🚀</span>
               सुरुवात करा
             </button>
-            <button className={styles.heroBtn2} onClick={() => navigate("/me")}>
+            <button
+              className={styles.heroBtn2}
+              onClick={() => navigate("/me")}
+              onMouseEnter={prefetchSelfProfile} // 👈 prefetch when hovered
+              onFocus={prefetchSelfProfile} // also works for keyboard users
+            >
               <span>🧑‍🦰</span>
               View Profile
             </button>
