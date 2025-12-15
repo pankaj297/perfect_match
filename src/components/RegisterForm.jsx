@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./design/RegisterForm.module.css";
 
-const MAX_FILE_MB = 10;
+const MAX_FILE_MB = 4;
 const BLOOD_REGEX = /^(A|B|AB|O)[+-]$/i; // e.g., A+, B-, O+, AB-
 const GENDERS = ["पुरुष", "महिला"];
 const AADHAAR_FIELD = "aadhaar"; // change to "aadhar" if backend expects that
@@ -216,7 +216,7 @@ const RegisterForm = ({ initialMobile = "", lockMobile = false }) => {
         if (!value) return "प्रोफाइल फोटो आवश्यक आहे";
         if (!value.type?.startsWith("image/")) return "फक्त इमेज फाइल निवडा";
         if (value.size > MAX_FILE_MB * 1024 * 1024)
-          return `फाइल ${MAX_FILE_MB}MB पेक्षा कमी असावी`;
+          return "फाइल 4MB पेक्षा कमी असावी";
         return "";
 
       case "aadhaar":
@@ -225,7 +225,7 @@ const RegisterForm = ({ initialMobile = "", lockMobile = false }) => {
         const isPdf = value.type === "application/pdf";
         if (!isImg && !isPdf) return "इमेज किंवा PDF निवडा";
         if (value.size > MAX_FILE_MB * 1024 * 1024)
-          return `फाइल ${MAX_FILE_MB}MB पेक्षा कमी असावी`;
+          return "फाइल 4MB पेक्षा कमी असावी";
         return "";
 
       default:

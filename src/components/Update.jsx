@@ -49,6 +49,9 @@ const extractServerMessage = (err) => {
   }
 };
 
+// 4MB max file size (for images/documents)
+const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
+
 // File Upload Component
 const FileUpload = ({
   label,
@@ -310,6 +313,11 @@ const Update = () => {
     return Math.round((done / total) * 100);
   }, [formData]);
 
+  const showToast = (type, message) => {
+    setToast({ type, message });
+    setTimeout(() => setToast({ type: "", message: "" }), 5000);
+  };
+
   // Load user (direct URL; removed env-based base)
   useEffect(() => {
     const fetchUser = async () => {
@@ -401,6 +409,13 @@ const Update = () => {
         if (!/^\d{10,}$/.test(value)) return "किमान 10 अंकांचा वैध नंबर टाका";
         return "";
 
+      case "profilePhoto":
+      case "aadhaar":
+        if (value && value.size > MAX_FILE_SIZE) {
+          return "फाइलचा आकार 4MB पेक्षा कमी असावा";
+        }
+        return "";
+
       default:
         return "";
     }
@@ -419,18 +434,46 @@ const Update = () => {
     setErrors((prev) => ({ ...prev, [name]: msg }));
   };
 
-  const showToast = (type, message) => {
-    setToast({ type, message });
-    setTimeout(() => setToast({ type: "", message: "" }), 5000);
-  };
-
   // Handlers
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
 
     if (type === "file") {
       const file = files && files.length > 0 ? files[0] : null;
+
+      // 4MB validation for files
+      if (file && file.size > MAX_FILE_SIZE) {
+        const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+        const maxMb = (MAX_FILE_SIZE / (1024 * 1024)).toFixed(0);
+        const msg = `फाइलचा आकार ${maxMb}MB पेक्षा कमी असावा (सध्या ${sizeMb}MB आहे)`;
+
+        showToast("error", msg);
+        setError(name, msg);
+        setTouched((t) => ({ ...t, [name]: true }));
+
+        // Clear selected file & preview
+        setFormData((prev) => ({ ...prev, [name]: null }));
+
+        if (name === "profilePhoto" && photoPreview) {
+          URL.revokeObjectURL(photoPreview);
+          setPhotoPreview(null);
+        }
+        if (name === "aadhaar" && aadhaarPreview) {
+          URL.revokeObjectURL(aadhaarPreview);
+          setAadhaarPreview(null);
+        }
+
+        // Clear the input so user can select same file again if needed
+        if (e.target) {
+          e.target.value = "";
+        }
+
+        return;
+      }
+
       setFormData((prev) => ({ ...prev, [name]: file }));
+      setError(name, "");
+      setTouched((t) => ({ ...t, [name]: true }));
 
       if (name === "profilePhoto") {
         if (file) {
@@ -470,6 +513,19 @@ const Update = () => {
     const hasError = Object.values(fieldErrors).some((m) => m);
     if (hasError) {
       showToast("error", "कृपया सर्व आवश्यक फील्ड योग्यरीत्या भरा.");
+      return;
+    }
+
+    // Also validate files on submit (in case of any edge cases)
+    const photoError = validateField("profilePhoto", formData.profilePhoto);
+    const aadhaarError = validateField("aadhaar", formData.aadhaar);
+    if (photoError || aadhaarError) {
+      setErrors((prev) => ({
+        ...prev,
+        profilePhoto: photoError,
+        aadhaar: aadhaarError,
+      }));
+      showToast("error", "कृपया फाइलचा आकार 4MB पेक्षा कमी ठेवा.");
       return;
     }
 
@@ -536,7 +592,7 @@ const Update = () => {
         open: true,
         type: "success",
         title: "अपडेट यशस्वी 🎉",
-        message: "তुमचे प्रोफाइल अपडेट झाले. प्रोफाइल पेजवर नेत आहोत...",
+        message: "तुमचे प्रोफाइल अपडेट झाले. प्रोफाइल पेजवर नेत आहोत...",
       });
 
       setTimeout(() => navigate(`/me`), 3000);
@@ -741,7 +797,7 @@ const Update = () => {
                     onBlur={handleBlur}
                     required
                   >
-                    <option value="">লিংग निवडा</option>
+                    <option value="">लिंग निवडा</option>
                     <option value="पुरुष">पुरुष</option>
                     <option value="महिला">महिला</option>
                   </select>
@@ -1059,7 +1115,7 @@ const Update = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.label}>পत्ता *</label>
+                <label className={styles.label}>पत्ता *</label>
                 <input
                   className={cn(
                     styles.input,
@@ -1111,8 +1167,11 @@ const Update = () => {
                 preview={photoPreview}
                 previewName={formData.profilePhoto?.name}
                 onChange={handleChange}
-                hint="JPG, PNG • कमाल 10MB"
+                onBlur={handleBlur}
+                hint="JPG, PNG • कमाल 4MB"
                 existingFile={existingProfilePhoto}
+                error={errors.profilePhoto}
+                touched={touched.profilePhoto}
               />
 
               <FileUpload
@@ -1122,8 +1181,11 @@ const Update = () => {
                 preview={aadhaarPreview}
                 previewName={formData.aadhaar?.name}
                 onChange={handleChange}
-                hint="इमेज, PDF • कमाल 10MB"
+                onBlur={handleBlur}
+                hint="इमेज, PDF • कमाल 4MB"
                 existingFile={existingAadhaar}
+                error={errors.aadhaar}
+                touched={touched.aadhaar}
               />
             </div>
           </div>
