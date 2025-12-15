@@ -4,8 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./design/SelfProfile.module.css";
 
-const API_BASE = "https://perfect-match-server.onrender.com/api";
-
+const API_BASE = "http://localhost:8080/api";
 
 // LocalStorage keys
 const LS_KEYS = {
@@ -20,7 +19,7 @@ const CACHE_TTL = 1000 * 60 * 5; // 5 minutes
 // Axios instance with timeout
 const api = axios.create({
   baseURL: API_BASE,
-  timeout: 50000, // 10s
+  timeout: 1000000, // 10s
 });
 
 // ---------- localStorage helpers ----------

@@ -3,14 +3,14 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./design/AdminLogin.css";
 
-const API_BASE = "https://perfect-match-server.onrender.com/api";
-const API_ADMIN_LOGIN = `${API_BASE}/admin/login`;
-const API_USERS_ADMIN_LOGIN = `${API_BASE}/users/admin/login`;
+const API_BASE = "http://localhost:8080/api/admin/login";
+// const API_ADMIN_LOGIN = `${API_BASE}/admin/login`;
+// const API_USERS_ADMIN_LOGIN = `${API_BASE}/users/admin/login`;
 
 // axios instance with a sensible timeout
 const api = axios.create({
   baseURL: API_BASE,
-  timeout: 8000, // 8 seconds - adjust if needed
+  timeout: 15000, // 8 seconds - adjust if needed
 });
 
 export const AdminLogin = () => {

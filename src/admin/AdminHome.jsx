@@ -11,12 +11,12 @@ import UserCard from "./UserCard.jsx"; // adjust path if needed
 import styles from "./design/AdminHome.module.css";
 
 // API
-const API_USERS_URL = "https://perfect-match-server.onrender.com/api/users/";
+const API_USERS_URL = "http://localhost:8080/api/users/";
 
 // Axios instance
 const api = axios.create({
   baseURL: API_USERS_URL,
-  timeout: 30000,
+  timeout: 50000,
 });
 
 // Prefetch helper for heavy admin full-profile page (call on hover/focus)

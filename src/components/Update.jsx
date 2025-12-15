@@ -315,9 +315,7 @@ const Update = () => {
     const fetchUser = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(
-          `https://perfect-match-server.onrender.com/api/users/${id}`
-        );
+        const res = await axios.get(`http://localhost:8080/api/users/${id}`);
         const user = res.data;
 
         setFormData({
@@ -421,7 +419,7 @@ const Update = () => {
 
   const showToast = (type, message) => {
     setToast({ type, message });
-    setTimeout(() => setToast({ type: "", message: "" }), 3500);
+    setTimeout(() => setToast({ type: "", message: "" }), 5000);
   };
 
   // Handlers
@@ -514,23 +512,19 @@ const Update = () => {
       if (formData.aadhaar) data.append("aadhaar", formData.aadhaar);
 
       // Direct URL for PUT
-      await axios.put(
-        `https://perfect-match-server.onrender.com/api/users/update/${id}`,
-        data,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-          onUploadProgress: (pe) => {
-            if (!pe) return;
-            const loaded = pe.loaded || 0;
-            const total = pe.total || 0;
-            setUploadBytes({ loaded, total });
-            if (total > 0) {
-              const percent = Math.round((loaded * 100) / total);
-              setUploadProgress(percent);
-            }
-          },
-        }
-      );
+      await axios.put(`http://localhost:8080/api/users/update/${id}`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (pe) => {
+          if (!pe) return;
+          const loaded = pe.loaded || 0;
+          const total = pe.total || 0;
+          setUploadBytes({ loaded, total });
+          if (total > 0) {
+            const percent = Math.round((loaded * 100) / total);
+            setUploadProgress(percent);
+          }
+        },
+      });
 
       setResultPopup({
         open: true,
