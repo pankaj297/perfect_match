@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./design/AdminFullProfile.module.css";
 
-const API_USERS_URL = "http://localhost:8080/api/users";
+const API_USERS_URL = "https://perfect-match-server.onrender.com/api/users";
 
 const getUserById = async (id) => {
   const res = await axios.get(`${API_USERS_URL}/${id}`);

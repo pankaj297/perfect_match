@@ -3,7 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./design/AdminLogin.css";
 
-const API_BASE = "http://localhost:8080/api/admin/login";
+const API_BASE =
+  "https://perfect-match-server.onrender.com/api/admin/login";
 // const API_ADMIN_LOGIN = `${API_BASE}/admin/login`;
 // const API_USERS_ADMIN_LOGIN = `${API_BASE}/users/admin/login`;
 

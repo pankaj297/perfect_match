@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./design/UserProfile.module.css";
 
-const API_USERS = "http://localhost:8080/api/users";
+const API_USERS = "https://perfect-match-server.onrender.com/api/users";
 
 const templates = [
   { key: "card", label: "कार्ड शैली" },

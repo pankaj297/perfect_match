@@ -322,7 +322,7 @@ const RegisterForm = ({ initialMobile = "", lockMobile = false }) => {
       if (formData.aadhaar) fd.append(AADHAAR_FIELD, formData.aadhaar);
 
       const res = await axios.post(
-        "http://localhost:8080/api/users/register",
+        "https://perfect-match-server.onrender.com/api/users/register",
         fd,
         {
           headers: { "Content-Type": "multipart/form-data" },

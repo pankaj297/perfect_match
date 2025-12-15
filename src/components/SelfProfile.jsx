@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./design/SelfProfile.module.css";
 
-const API_BASE = "http://localhost:8080/api";
+const API_BASE = "https://perfect-match-server.onrender.com/api";
 
 // LocalStorage keys
 const LS_KEYS = {

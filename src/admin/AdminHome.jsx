@@ -11,7 +11,7 @@ import UserCard from "./UserCard.jsx"; // adjust path if needed
 import styles from "./design/AdminHome.module.css";
 
 // API
-const API_USERS_URL = "http://localhost:8080/api/users/";
+const API_USERS_URL = "https://perfect-match-server.onrender.com/api/users/";
 
 // Axios instance
 const api = axios.create({
