@@ -76,7 +76,7 @@ const AdminFullProfile = () => {
   return (
     <div className={styles.adminContainer}>
       <div className={styles.adminTopTitle}>
-        || बंजारा समाज वधू - वर मेळावा जळगाव जिल्हा ||
+        {/* || बंजारा समाज वधू - वर मेळावा जळगाव जिल्हा || */}
       </div>
 
       <div className={styles.adminHeader}>

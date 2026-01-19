@@ -11,7 +11,7 @@ const API_BASE =
 // axios instance with a sensible timeout
 const api = axios.create({
   baseURL: API_BASE,
-  timeout: 15000, // 8 seconds - adjust if needed
+  timeout: 25000, // 8 seconds - adjust if needed
 });
 
 export const AdminLogin = () => {

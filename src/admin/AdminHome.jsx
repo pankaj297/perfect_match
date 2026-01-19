@@ -16,7 +16,7 @@ const API_USERS_URL = "https://perfect-match-server.onrender.com/api/users/";
 // Axios instance
 const api = axios.create({
   baseURL: API_USERS_URL,
-  timeout: 50000,
+  timeout: 5000000,
 });
 
 // Prefetch helper for heavy admin full-profile page (call on hover/focus)

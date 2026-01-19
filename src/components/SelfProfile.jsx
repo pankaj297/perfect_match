@@ -19,7 +19,7 @@ const CACHE_TTL = 1000 * 60 * 5; // 5 minutes
 // Axios instance with timeout
 const api = axios.create({
   baseURL: API_BASE,
-  timeout: 1000000, // 10s
+  timeout: 400000000, // 10s
 });
 
 // ---------- localStorage helpers ----------
