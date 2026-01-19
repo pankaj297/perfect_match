@@ -136,6 +136,7 @@ const AdminFullProfile = () => {
       <div className={styles.adminContent}>
         <section className={styles.adminSection}>
           <h2>व्यक्तिगत माहिती</h2>
+          <InfoRow label="नाव" value={user.name} />
           <InfoRow label="जन्म तारीख" value={user.dob} />
           <InfoRow label="जन्म स्थळ" value={user.birthplace} />
           <InfoRow label="कुळदेवत" value={user.kuldevat} />
@@ -157,6 +158,7 @@ const AdminFullProfile = () => {
           <InfoRow label="काका" value={user.kaka} />
           <InfoRow label="पत्ता" value={user.address} />
           <InfoRow label="मोबाइल" value={user.mobile} />
+          <DocumentRow label="Profile Photo" path={user.profilePhotoPath} />
         </section>
 
         <section
